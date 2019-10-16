@@ -1,6 +1,6 @@
 <h1>{{title}}</h1>
-<p>New messages: {{ $newMessagesCount | async }}</p>
-<p>Counter: {{ $counter | async }}</p>
+<p>New messages: {{ newMessagesCount$ | async }}</p>
+<p>Counter: {{ counter$ | async }}</p>
 <button (click)="increment()">Increment</button>
 <button (click)="decrement()">Decrement</button>
 
@@ -11,4 +11,4 @@
   <div class="partition partition-filled">
     <app-todo-dashboard></app-todo-dashboard>
   </div>
-</div>
+</div> 

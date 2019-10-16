@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
-import { CounterActions } from './app.actions';
-import { NgRedux, select } from '@angular-redux/store';
-import { Map } from 'immutable';
+import { Store, select } from '@ngrx/store';
+
+import * as countersActions from './store/actions/counters.actions';
+import { ICountersState } from './store/state/counters.state';
+import { getCounter, getNewMessagesCount } from './store/selectors/counters.selectors';
+import { IAppState } from './store/state/app.state';
 
 
 @Component({
@@ -11,21 +14,18 @@ import { Map } from 'immutable';
 })
 export class AppComponent {
   title = 'redux-study';
-  @select((s: Map<string, any>) => s.get('counter')) $counter: number;
-  @select((s: Map<string, any>) => s.getIn(['messaging', 'newMessages'])) $newMessagesCount;
-  // @select(['messaging', 'newMessages']) $newMessages;
 
-  constructor(private ngRedux: NgRedux<Map<string, any>>) {
-    // ngRedux.subscribe(() => {
-    //   console.log(ngRedux.getState());
-    // })
-  }
+  public counter$ = this._store.pipe(select(getCounter));
+  public newMessagesCount$ = this._store.pipe(select(getNewMessagesCount));
+
+  constructor(private _store: Store<IAppState>) { }
+
 
   increment() {
-    this.ngRedux.dispatch(CounterActions.increment());
+    this._store.dispatch(countersActions.increment());
   }
 
   decrement() {
-    this.ngRedux.dispatch(CounterActions.decrement());
+    this._store.dispatch(countersActions.decrement());
   }
 }

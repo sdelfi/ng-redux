@@ -1,19 +1,20 @@
 import { Component } from '@angular/core';
-import { NgRedux, select } from '@angular-redux/store';
-import { TodoActions } from '../app.actions';
+import { Store, select } from '@ngrx/store';
+import { IAppState } from '../store/state/app.state';
+import * as todosActions from '../store/actions/todos.actions';
+import { getLastUpdate, selectTotal } from '../store/selectors/todos.selectors';
 
 @Component({
   selector: 'app-todo-dashboard',
   templateUrl: './todo-dashboard.component.html'
 })
 export class TodoDashboardComponent {
-  @select(s => s.get('todos')) $todos;
-  @select(s => s.get('lastUpdate')) $lastUpdate;
+  todosCount$ = this._store.pipe(select(selectTotal));;
+  lastUpdate$ = this._store.pipe(select(getLastUpdate));
 
-  constructor(private ngRedux: NgRedux<Map<string, any>>) {
-  }
+  constructor(private _store: Store<IAppState>) { }
 
-  clearTodos() {
-    this.ngRedux.dispatch(TodoActions.clearTodos());
+  clearTodoss() {
+    this._store.dispatch(todosActions.clearTodos());
   }
 }

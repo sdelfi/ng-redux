@@ -5,12 +5,17 @@ import { HttpClientModule } from "@angular/common/http";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { NgRedux, NgReduxModule, DevToolsExtension } from '@angular-redux/store';
-import { rootReducer, INITIAL_STATE } from './store';
-import { fromJS, Map } from 'immutable';
 import { TodoDashboardComponent } from './todo-dashboard/todo-dashboard.component';
 import { TodoListComponent } from './todo-list/todo-list.component';
 import { TodoService } from './todo-list/todo.service';
+
+import { environment } from 'src/environments/environment';
+
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { reducers } from './store/reducers/app.reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { appEffects } from './store/effects/app.effects';
 
 @NgModule({
   declarations: [
@@ -22,21 +27,16 @@ import { TodoService } from './todo-list/todo.service';
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,
-    NgReduxModule
+    EffectsModule.forRoot(appEffects),
+    StoreModule.forRoot(reducers),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+    }),
   ],
   providers: [
     TodoService
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor(
-    ngRedux: NgRedux<Map<string, any>>,
-    devTools: DevToolsExtension
-  ) {
-
-    const enhancers = isDevMode() ? [devTools.enhancer()] : [];
-
-    ngRedux.configureStore(rootReducer, fromJS(INITIAL_STATE), [], enhancers)
-  }
-}
+export class AppModule { }
